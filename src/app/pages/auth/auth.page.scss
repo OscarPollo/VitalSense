@@ -1,0 +1,83 @@
+.d-flex-center {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+    width: 90%;
+    background-color: white;
+    margin-left: auto; 
+    margin-right: auto;
+}
+.validators {
+    margin-top: 10px; /* Un poco de espacio entre el elemento anterior */
+    color: var(--ion-color-danger); /* Color del texto para mensajes de error */
+    font-size: 14px; /* Tamaño del texto para mensajes de error */
+}
+.auth-form {
+    text-align: center; /* Alinea el contenido del formulario al centro */
+}
+.submit {
+    color: white; /* Cambiar el color del texto del botón */
+    --background: var(--ion-color-secondary);
+    
+    border: none; /* Eliminar el borde del botón */
+    font-size: 2.5em; /* Aumentar el tamaño de letra del texto del botón */
+    border-radius: 50px; /* Agregar esquinas redondeadas al botón */
+    font-weight: bolder; /* Aumentar el grosor del texto del botón */
+    width: 60%; /* Ancho más pequeño para el botón */
+    margin-left: auto; /* Centrar el botón */
+    margin-right: auto; /* Centrar el botón */
+    padding: 0; /* Elimina el padding en todas las direcciones */
+    margin-top: 15%;
+    margin-bottom: 10%;
+    min-height: 0;
+}
+
+
+ion-button::part(native) {
+    min-height: 0;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 50px;
+    }
+.signupLink{
+    display: flex;
+    margin: auto;
+    flex-direction: row;
+    align-content: center;
+    position: absolute;
+    justify-content: center;
+    left: 0;
+    width: 88%;
+    right: 0;
+    p{
+        color: black;
+        font-size: x-large;
+    }
+    a{
+        text-decoration: none;
+        color: var(--ion-color-secondary);
+        font-weight: bolder; /* Aumentar el grosor del texto del botón */
+
+    }
+}
+.forgotpassword{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 5%;
+    text-align: right; /* Alinea el contenido a la derecha */
+    a{
+        font-weight: 400;
+        font-size: 1.1rem;
+        text-decoration: none;
+        top: 0;
+        color: var(--ion-color-secondary);
+    }
+    
+}
+.mi-footer {
+    background-color: var(--ion-color-secondary); /* Color de fondo deseado */
+    padding: 20px; /* Añade espacio alrededor del contenido del footer, opcional */
+    color: white; /* Color del texto en el footer, opcional */
+}
