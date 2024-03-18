@@ -55,7 +55,7 @@ export class AuthPage implements OnInit {
         this.form.reset();
 
         this.utilsSvc.presentToast({
-          message: `Iniciaste sesion ${user.name}`,
+          message: `You are logged in ${user.name}`,
           duration: 1500,
           color: 'success',
           position: 'middle',

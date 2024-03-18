@@ -3,12 +3,23 @@
   
   
   <ion-input 
+  *ngIf="type !== 'select'"
   [type]="type" 
   [autocomplete]="autocomplete"
   [label]="label"
   [formControl]="control"
+  [placeholder]="placeholder"
   label-placement="floating"
   ></ion-input>
+
+  <ion-select 
+    interface="popover"
+    *ngIf="type === 'select'" 
+    [formControl]="control" 
+    [placeholder]="label"
+    >
+    <ion-select-option *ngFor="let option of genderOptions" [value]="option">{{ option }}</ion-select-option>
+  </ion-select>
 
   <ion-button *ngIf="isPassword" (click)="showOrHidePassword()" slot="end"  fill="clear" shape="round">
     <ion-icon slot="icon-only" [name]="hide ? 'eye-outline' : 'eye-off-outline'"></ion-icon>

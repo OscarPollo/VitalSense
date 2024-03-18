@@ -13,9 +13,12 @@ export class CustomInputComponent  implements OnInit {
   @Input() label!:string;
   @Input() autocomplete!:string;
   @Input() icon!:string;
+  @Input() placeholder!:string;  
   
   isPassword!:boolean;
   hide:boolean=true;
+  genderOptions: string[] = ['Male', 'Female', 'Other']; // Definición de opciones de género
+  
   constructor() { }
 
   ngOnInit() {

@@ -24,3 +24,86 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+
+@media (min-width: 760px) {
+  .auth-form {
+    width: 500px;
+  }
+
+  .add-update-modal {
+    --height: 680px;
+  }
+}
+
+.product-item{
+  --padding-top:20px;
+  ion-avatar{
+    width:70px;
+    height:80px;
+    --border-radius: 15px;
+  }
+
+  .name{
+    font-weight: 600;
+    padding-bottom: 5px;
+  }
+
+  .data{
+    font-size: 13px;
+    strong{
+      font-weight: 500;
+    }
+  }
+  
+  .option-btn{
+    font-size: 27px;
+  }
+
+  ion-chip{
+    font-size: 14px;
+    border-radius: 10px;
+    margin-left: 0;
+  }
+}
+
+.alert-button.sc-ion-alert-ios {
+  color: black; /* Cambiar el color del texto a negro */
+}
+.alert-button.sc-ion-alert-ios:last-child {
+  font-weight: bold;
+  color: var(--ion-color-danger); /* Cambiar el color del texto a negro */
+}
+.empty {
+  text-align: center; /* Centrar el contenido horizontalmente */
+  margin-top: 10px; /* Agregar un espacio en la parte superior */
+}
+
+.empty ion-icon {
+  font-size: 150px; /* Tamaño del icono */
+  color: #ccc; /* Color del icono */
+}
+
+.empty h3 {
+  margin-top: 5px; /* Agregar un espacio entre el icono y el texto */
+  font-size: 20px; /* Tamaño del texto */
+  color: #999; /* Color del texto */
+}
+.d-flex-center {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+}
+
+.ion-text-center {
+  text-align: center; /* Centra el texto horizontalmente */
+}
+.safe-p-bottom {
+  padding-bottom: env(safe-area-inset-bottom); /* Añade espacio de seguridad en la parte inferior */
+}
+.ion-no-border {
+  border-width: 0; /* Establece el ancho del borde en cero */
+}
+.ion-padding-top {
+  padding-top: 1rem; /* Ajusta el valor según tus necesidades */
+}

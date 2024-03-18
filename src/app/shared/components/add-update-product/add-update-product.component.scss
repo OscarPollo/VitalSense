@@ -1,0 +1,17 @@
+.validators {
+    margin-top: 10px; /* Un poco de espacio entre el elemento anterior */
+    color: var(--ion-color-danger); /* Color del texto para mensajes de error */
+    font-size: 14px; /* Tamaño del texto para mensajes de error */
+}
+
+.image-icon{
+    font-size:100px;
+    opacity:30%;
+}
+
+ion-avatar{
+    width: 200px;
+    height: 160px;
+    --border-radius: 15px;
+    margin:0 auto;
+}
