@@ -3,10 +3,11 @@
 
 
 <ion-content style="  --background: var(--ion-color-secondary);">
-
+  <!-- REFRESH -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+  <!-- TARJETA -->
   <ion-card mode="ios" color="primary"class="d-flex-center ion-text-center" *ngIf="!loading && products.length">
     <div>
       <h5>{{products.length}}</h5>
@@ -18,23 +19,24 @@
     </div> -->
   </ion-card>
   
+  <!-- INTERACTIVO -->
   <ion-list lines="full">
     <!-- AGREGAR PACIENTE -->
     <ion-item (click)="addUpdateProduct()">
       <ion-icon name="person-add-sharp" slot="start"></ion-icon>
       <ion-label>Register new patient</ion-label>
     </ion-item>
-
+    <!-- ADQUIRIR NUEVA SEÑAL -->
     <ion-item (click)="addUpdateProduct()">
       <ion-icon name="pulse" slot="start"></ion-icon>
       <ion-label>Acquire new signal</ion-label>
     </ion-item>
-
+    <!-- SELECCIONAR SEÑAL -->
     <ion-item (click)="addUpdateProduct()">
       <ion-icon name="analytics" slot="start"></ion-icon>
       <ion-label>Select signal</ion-label>
     </ion-item>
-    
+    <!-- MENU DESPLEGABLE -->
     <ion-item (click)="toggleSubmenu('opcion2')">
       <ion-label>Opción 2</ion-label>
     </ion-item>
@@ -46,6 +48,7 @@
     </ion-item>
     <!-- Repite este patrón para más opciones -->
 
+    <!-- MOSTRAR LISTA DE PACIENTES -->
     <ion-list *ngIf="!loading">
       <ion-item-sliding class="product-item" *ngFor="let p of products">
         <ion-item>
@@ -76,9 +79,9 @@
         
       </ion-item-sliding>
     </ion-list>
-
+    <!-- MOSTRAR PACIENTES CARGANDO -->
     <ion-list *ngIf="loading">
-        <ion-item class="product-item" *ngFor="let p of [1,1,1,1,1,1]">
+        <ion-item class="product-item" *ngFor="let p of [1,1,1]">
           <ion-avatar slot="start">
             <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>  
           </ion-avatar>
@@ -89,7 +92,7 @@
         </ion-item>        
     </ion-list>
 
-    <!-- no hay usuarios disponibles -->
+    <!-- no hay PACIENTES disponibles -->
     <div *ngIf="!loading && !products.length" class="empty">
       <ion-icon name="shield"></ion-icon>
       <h3>There are no registered patients yet</h3>

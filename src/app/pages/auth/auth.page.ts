@@ -23,7 +23,7 @@ export class AuthPage implements OnInit {
       await loading.present();
 
       this.firebaseSvc.signIn(this.form.value as User).then(res => {
-        
+
         this.getUserInfo(res.user.uid);
 
       }).catch(error => {

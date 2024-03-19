@@ -20,7 +20,9 @@ export class NoAuthGuard implements CanActivate {
     return new Promise((resolve) => {
 
       this.firebaseSvc.getAuth().onAuthStateChanged((auth) => {
-        if (!auth) {resolve(true);}
+        if (!auth) {
+          resolve(true);
+        }
         else{
           this.utilSvc.routerLink('main/home');
           resolve(false);

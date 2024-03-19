@@ -55,7 +55,7 @@ export class HomePage implements OnInit {
       orderBy('age', 'desc'),
       where('age', '>=', 5)
     ]
-
+    
     let sub = this.firebaseSvc.getCollectionData(path,query).subscribe({
       next: (res: any) => {
         console.log(res);
@@ -65,7 +65,7 @@ export class HomePage implements OnInit {
       }
     })
   }
-  //AGREGAR O ACTUALIZAR P
+  //AGREGAR O ACTUALIZAR PACIENTE
   async addUpdateProduct(product?: Product) {
     let success = await this.utilsSvc.presentModal({
       component: AddUpdateProductComponent,

@@ -8,7 +8,6 @@ import { UtilsService } from '../services/utils.service';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-
   firebaseSvc = inject(FirebaseService);
   utilSvc = inject(UtilsService);
 
