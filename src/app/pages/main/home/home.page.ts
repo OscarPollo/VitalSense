@@ -53,7 +53,7 @@ export class HomePage implements OnInit {
     this.loading=true;
     let query = [
       orderBy('age', 'desc'),
-      where('age', '>=', 5)
+      where('age', '>=', 0)
     ]
     
     let sub = this.firebaseSvc.getCollectionData(path,query).subscribe({
@@ -65,6 +65,8 @@ export class HomePage implements OnInit {
       }
     })
   }
+
+
   //AGREGAR O ACTUALIZAR PACIENTE
   async addUpdateProduct(product?: Product) {
     let success = await this.utilsSvc.presentModal({
@@ -74,7 +76,7 @@ export class HomePage implements OnInit {
     })
     if (success) this.getProducts();
   }
-
+  //CONFIRMAR BORRAR PACIENTE
   async confirmDeleteProduct(product: Product) {
     this.utilsSvc.presentAlert({
       header: 'Delete patient',
@@ -102,7 +104,9 @@ export class HomePage implements OnInit {
     await loading.present();
 
     let imagePath = await this.firebaseSvc.getFilePath(product.image);
-    await this.firebaseSvc.deleteFile(imagePath);
+    if (imagePath){
+      await this.firebaseSvc.deleteFile(imagePath);
+    }
 
     this.firebaseSvc.deleteDocument(path).then(async res => {
 

@@ -37,23 +37,25 @@
       <ion-label>Select signal</ion-label>
     </ion-item>
     <!-- MENU DESPLEGABLE -->
-    <ion-item (click)="toggleSubmenu('opcion2')">
-      <ion-label>Opción 2</ion-label>
+    <ion-item (click)="toggleSubmenu('Rp')">
+      <ion-icon name="list" slot="start"></ion-icon>
+      <ion-label>Registered patients</ion-label>
     </ion-item>
-    <ion-item *ngIf="showSubmenu === 'opcion2'">
+    <!-- <ion-item *ngIf="showSubmenu === 'Rp'">
       <ion-label>Subopción 1</ion-label>
     </ion-item>
-    <ion-item *ngIf="showSubmenu === 'opcion2'">
+    <ion-item *ngIf="showSubmenu === 'Rp'">
       <ion-label>Subopción 2</ion-label>
-    </ion-item>
+    </ion-item> -->
     <!-- Repite este patrón para más opciones -->
 
     <!-- MOSTRAR LISTA DE PACIENTES -->
-    <ion-list *ngIf="!loading">
+    <ion-list *ngIf="!loading && showSubmenu === 'Rp'">
       <ion-item-sliding class="product-item" *ngFor="let p of products">
         <ion-item>
           <ion-avatar slot="start">
-            <img [src]="p.image"/>
+            <img *ngIf="p.image" [src]="p.image"/>
+            <ion-icon *ngIf="!p.image" name="person-circle-outline" class="iiconno"></ion-icon>
           </ion-avatar>
           <ion-label>
             <div class="name">{{p.name}}</div>

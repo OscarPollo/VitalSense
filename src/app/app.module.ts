@@ -13,7 +13,8 @@ import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, 
+  imports: [
+    BrowserModule, 
     IonicModule.forRoot({mode:'md'}), 
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig)

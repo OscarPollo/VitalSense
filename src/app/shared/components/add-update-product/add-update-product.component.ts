@@ -21,7 +21,7 @@ export class AddUpdateProductComponent implements OnInit {
     gender: new FormControl('', [Validators.required]),
     phoneNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]), // Se agrega validación para que el número de teléfono tenga 10 dígitos
     observation: new FormControl('', [Validators.required]),
-    image: new FormControl('', [Validators.required])
+    image: new FormControl('')
   })
 
   firebaseSvc = inject(FirebaseService);
@@ -57,17 +57,21 @@ export class AddUpdateProductComponent implements OnInit {
     let path = `users/${this.user.uid}/patients`;
 
     const loading = await this.utilsSvc.loading();
-    await loading.present();
-
-    //subir imagen y botener la url
-    let dataUrl = this.form.value.image;
-    let imagePath = `${this.user.uid}/${Date.now()}`;
-    let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-    this.form.controls.image.setValue(imageUrl);
+    await loading.present();  
 
     delete this.form.value.id;
 
     this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
+
+      //subir imagen y botener la url
+      let dataUrl = this.form.value.image;
+      if(dataUrl){
+        let imagePath = `${this.user.uid}/${res.id}/${Date.now()}`;
+        let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+
+        path=`users/${this.user.uid}/patients/${res.id}`
+        await this.firebaseSvc.updateDocument(path, {image: imageUrl});
+      }
 
       this.utilsSvc.dismissModal({ succes: true });
 
@@ -103,7 +107,10 @@ export class AddUpdateProductComponent implements OnInit {
     //subir imagen y botener la url si cambio la imagen
     if (this.form.value.image !== this.product.image) {
       let dataUrl = this.form.value.image;
-      let imagePath = await this.firebaseSvc.getFilePath(this.product.image);
+      let imagePath = `${this.user.uid}/${this.product.id}/${Date.now()}`;
+      if(this.product.image){
+        imagePath = await this.firebaseSvc.getFilePath(this.product.image);
+      }
       let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
       this.form.controls.image.setValue(imageUrl);
     }
