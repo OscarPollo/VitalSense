@@ -5,5 +5,6 @@ export interface Product{
         gender: string,
         age: number,
         image: string,
+        URLim: string,
         id: string
 }

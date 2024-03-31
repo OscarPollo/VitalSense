@@ -6,6 +6,7 @@ import { LogoComponent } from './components/logo/logo.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddUpdateProductComponent } from './components/add-update-product/add-update-product.component';
+import { AddSignalComponent } from './components/add-signal/add-signal.component';
 
 
 
@@ -15,14 +16,16 @@ import { AddUpdateProductComponent } from './components/add-update-product/add-u
     HeaderComponent,
     CustomInputComponent,
     LogoComponent,
-    AddUpdateProductComponent
+    AddUpdateProductComponent,
+    AddSignalComponent
   ],
   exports: [
     HeaderComponent,
     CustomInputComponent,
     LogoComponent,
     ReactiveFormsModule,
-    AddUpdateProductComponent
+    AddUpdateProductComponent,
+    AddSignalComponent
   ],
   imports: [
     CommonModule,

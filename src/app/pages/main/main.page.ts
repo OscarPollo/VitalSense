@@ -22,6 +22,7 @@ export class MainPage implements OnInit {
   utilsSvc = inject(UtilsService);
 
   ngOnInit() {
+    console.log("desde el oninit del main");
     this.router.events.subscribe((event: any) => {
       if (event?.url) {
         this.currentPath = event.url;

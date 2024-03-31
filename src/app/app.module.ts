@@ -11,15 +11,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment';
 
+const persistenceSettings = {
+  synchronizeTabs: true, // Sincronizar la caché entre pestañas
+};
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule, 
     IonicModule.forRoot({mode:'md'}), 
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig)
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    ],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

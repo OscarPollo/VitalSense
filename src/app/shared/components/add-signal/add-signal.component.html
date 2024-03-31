@@ -1,0 +1,84 @@
+<app-header [isModal]="true" [title]="'Acquire new signal'"></app-header>
+<ion-content>
+  <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()">
+
+    <!-- TARJETA -->
+    <ion-card mode="ios" color="primary" class="d-flex-center ion-text-center">
+      <ion-item class="product-item" style="--padding-top: 0; --background: var(--ion-color-primary); ">
+        <ion-avatar slot="start">
+          <img *ngIf="product.image" [src]="product.image" />
+          <ion-icon *ngIf="!product.image" name="person-circle-outline" class="iiconno"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <div class="name">{{product.name}}</div>
+          <div class="data">
+            <strong>ID: </strong>{{product.id}}<br>
+            <strong>Age: </strong>{{product.age}} <br>
+            <strong>Gender: </strong>{{product.gender}}<br>
+            <strong>Obs:</strong>{{product.observation}}<br>
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-card>
+
+    <app-custom-input 
+      icon="heart" 
+      [control]="form.controls.frecCard" 
+      type="number" 
+      label="Heart rate"
+      (ionInput)="setNumberInputs()"
+    ></app-custom-input>
+    <div class="validators" *ngIf="form.controls.frecCard.errors && form.controls.frecCard.touched">
+      <div *ngIf="form.controls.frecCard.errors?.['required']">Heart rate is required</div>
+    </div>
+
+    <app-custom-input 
+      icon="thermometer" 
+      [control]="form.controls.tempCorp" 
+      type="number" 
+      label="Body temperature"
+      (ionInput)="setNumberInputs()"
+    ></app-custom-input>
+    <div class="validators" *ngIf="form.controls.tempCorp.errors && form.controls.tempCorp.touched">
+      <div *ngIf="form.controls.tempCorp.errors?.['required']">Temperature is required</div>
+    </div>
+
+    <app-custom-input 
+    icon="shirt" 
+    [control]="form.controls.frecResp" 
+    type="number" 
+    label="Breathing frequency"
+    (ionInput)="setNumberInputs()"
+    ></app-custom-input>
+    <div class="validators" *ngIf="form.controls.frecResp.errors && form.controls.frecResp.touched">
+      <div *ngIf="form.controls.frecResp.errors?.['required']">Respiratory  rate is required</div>
+    </div>
+
+    <app-custom-input 
+    icon="id-card" 
+    [control]="form.controls.observation" 
+    type="text" 
+    label="Notes"
+    ></app-custom-input>
+    <div class="validators" *ngIf="form.controls.observation.errors && form.controls.observation.touched">
+      <div *ngIf="form.controls.observation.errors?.['required']">Observation is required</div>
+    </div>
+
+    <app-custom-input 
+    icon="link" 
+    [control]="form.controls.URLarchive" 
+    type="text" 
+    label="URL"
+    ></app-custom-input>
+    <div class="validators" *ngIf="form.controls.URLarchive.errors && form.controls.URLarchive.touched">
+      <div *ngIf="form.controls.URLarchive.errors?.['required']">URL is required</div>
+    </div>
+
+    <ion-button class="submit" expand="block" mode="ios" type="submit" [disabled]="form.invalid">
+      Add record 
+      <ion-icon slot="end" name="play"></ion-icon>
+    </ion-button>
+
+
+  </form>
+</ion-content>

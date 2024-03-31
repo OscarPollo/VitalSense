@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc, deleteField, getDocs  } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { getStorage, uploadString, ref, getDownloadURL, deleteObject } from 'firebase/storage'
@@ -41,6 +41,7 @@ export class FirebaseService {
   signOut() {
     getAuth().signOut();
     localStorage.removeItem('user');
+    localStorage.removeItem('products');
     this.utilSvc.routerLink('/auth');
   }
 
@@ -62,6 +63,15 @@ export class FirebaseService {
   //BORRAR DOCUMENTO
   deleteDocument(path: string) {
     return deleteDoc(doc(getFirestore(), path));
+  }
+  //BORRAR SUBCOLECCION
+  async deleteSubcollection(path: string, subcollectionName: string) {
+    const subcollectionRef = collection(doc(getFirestore(), path), subcollectionName);
+    const querySnapshot = await getDocs(subcollectionRef);
+
+    querySnapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
   }
   //GET DOCUMENT
   async getDocument(path: string) {
