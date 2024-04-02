@@ -40,11 +40,18 @@ export class AddSignalComponent implements OnInit {
     if (tempCorp.value) tempCorp.setValue(parseFloat(tempCorp.value))
     if (frecResp.value) frecResp.setValue(parseFloat(frecResp.value))
   }
-  submit() {
+  async submit() {
     if (this.form.valid) {
-      this.createRecord();
+      // this.createRecord();
+      this.takeReg();
     }
   }
+  bluetoothScanResults
+  bluetoothIsScanning
+  async takeReg(){
+    this.utilsSvc.scanForBluetoothDevices();
+  }
+
   getFormatedDate(currentDate: Date): string {
     const year = currentDate.getFullYear();
     const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Añade un cero al mes si es necesario

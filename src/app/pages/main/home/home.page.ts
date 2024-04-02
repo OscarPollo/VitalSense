@@ -87,11 +87,11 @@ export class HomePage implements OnInit {
           }
         }
       } else {// Si el producto tiene un ID, significa que ya existe, por lo tanto, lo actualizamos
-        console.log(product.id)
+        //console.log(product.id)
         for (const record of records) {
-          console.log(record.patient)
+          //console.log(record.patient)
           if (product.id === record.patient) {  
-            console.log("si coinciden")
+            //console.log("si coinciden")
             await this.createRecord(record, product.id.toString());
           }
         }
