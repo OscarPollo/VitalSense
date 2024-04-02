@@ -5,6 +5,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { Network } from '@capacitor/network';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,21 +19,21 @@ export class UtilsService {
 
   getOnlineStatus(): Observable<boolean> {
     return new Observable<boolean>(observer => {
-      observer.next(navigator.onLine); // Emitir el estado inicial de conexión
+      const getStatus = async () => {
+        const status = await Network.getStatus();
+        observer.next(status.connected);
+      };
   
-      const onlineHandler = () => observer.next(true); // Manejador para cuando el navegador se conecta
-      const offlineHandler = () => observer.next(false); // Manejador para cuando el navegador se desconecta
+      getStatus(); // Emitir el estado inicial de conexión
   
-      window.addEventListener('online', onlineHandler);
-      window.addEventListener('offline', offlineHandler);
+      const listener = Network.addListener('networkStatusChange', async status => {
+        observer.next(status.connected);
+      });
   
       return () => {
-        window.removeEventListener('online', onlineHandler);
-        window.removeEventListener('offline', offlineHandler);
+        listener.remove(); // Eliminar el listener cuando ya no sea necesario
       };
-    }).pipe(
-      distinctUntilChanged(), // Solo emitir cuando hay un cambio en el estado de conexión
-    );
+    });
   }
   async takePicture(promptLabelHeader: string) {
     const photo =  await Camera.getPhoto({
