@@ -50,6 +50,7 @@ export class AddUpdateProductComponent implements OnInit {
       if (this.product) this.updateProduct();
       else this.createProduct();
     }
+
   }
 
   async createProduct() {
