@@ -24,22 +24,15 @@ export class HomePage implements OnInit {
 
   isConnected: boolean;
   onlineSubscription: Subscription;
-  previousConnectionState: boolean;
+  isChanged: boolean;
 
   ngOnInit() {
     console.log("desde el ngOnInit");
-    this.onlineSubscription = this.utilsSvc.getOnlineStatus().subscribe(async online => {
-      this.loading = true;
-      if (!this.previousConnectionState && online) {
-        // Si la conexión cambia de 'false' a 'true', ejecuta la función syncCambios
-        await this.syncCambios();
-        this.isConnected = online;
-      }
-      this.previousConnectionState = online;
+    this.onlineSubscription = this.utilsSvc.getOnlineStatus().subscribe(async online => {      
       this.isConnected = online;
-      this.getProducts();
-      this.loading = false;
     });
+    this.getProducts();
+
   }
   ngOnDestroy() {
     console.log("desde el ondestroy");
@@ -48,9 +41,8 @@ export class HomePage implements OnInit {
     }
   }
 
-  //EJECUTAR UNA FUNCION CADA QUE EL USUARIO ENTRE A LA PAGINA
+  // // EJECUTAR UNA FUNCION CADA QUE EL USUARIO ENTRE A LA PAGINA
   // ionViewWillEnter() {
-  //   console.log("desde el ionviewwillenter");
   //   this.getProducts();
   // }
 
@@ -87,11 +79,8 @@ export class HomePage implements OnInit {
           }
         }
       } else {// Si el producto tiene un ID, significa que ya existe, por lo tanto, lo actualizamos
-        console.log(product.id)
         for (const record of records) {
-          console.log(record.patient)
           if (product.id === record.patient) {  
-            console.log("si coinciden")
             await this.createRecord(record, product.id.toString());
           }
         }
@@ -100,12 +89,13 @@ export class HomePage implements OnInit {
     }
     localStorage.removeItem('records');
     this.utilsSvc.presentToast({
-      message: 'Data patients synchronized. DONT FORGET reload the page',
+      message: 'Data patients synchronized.',
       duration: 2000,
       color: 'success',
       position: 'middle',
       icon: "checkmark-circle-outline"
     });
+    this.isChanged = false;
   }
 
   async createRecord(record: any, newProductId: string) {
@@ -246,6 +236,7 @@ export class HomePage implements OnInit {
       }
     })
     if (success) this.getProducts();
+    if (!this.isConnected)this.isChanged = true;
   }
   //AGREGAR O ACTUALIZAR PACIENTE
   async addUpdateProduct(product?: Product) {
@@ -258,6 +249,7 @@ export class HomePage implements OnInit {
       }
     })
     if (success) this.getProducts();
+    if (!this.isConnected)this.isChanged = true;
   }
   //CONFIRMAR BORRAR PACIENTE
   async confirmDeleteProduct(product: Product) {

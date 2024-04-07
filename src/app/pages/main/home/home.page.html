@@ -9,14 +9,17 @@
   </ion-refresher>
   <!-- TARJETA -->
   <ion-card mode="ios" color="primary"class="d-flex-center ion-text-center" *ngIf="!loading && products.length">
+    <div style="height: 4em; width: 4em;">
+      <ion-icon *ngIf="isConnected" name="wifi" class="indicadorWifi" style="color: var(--ion-color-success);"></ion-icon>
+      <ion-icon *ngIf="!isConnected" name="alert" class="indicadorWifi" style="color: var(--ion-color-danger);"></ion-icon>
+    </div>
     <div>
       <h5>{{products.length}}</h5>
       <p>Patients</p>
     </div>
-    <!-- <div>
-      <h5>{{products.length}}</h5>
-      <p>Registros</p>
-    </div> -->
+      <ion-button (click)="syncCambios()" expand="block" mode="ios" [disabled]="!isConnected || !isChanged" style="margin: 0%;--padding-bottom: 0;--padding-end: 0;--padding-start: 0;--padding-top: 0;">
+        <ion-icon style="width: 2em;height: 2em;" name="cloud-upload" ></ion-icon>
+      </ion-button>
   </ion-card>
   
   <!-- INTERACTIVO -->

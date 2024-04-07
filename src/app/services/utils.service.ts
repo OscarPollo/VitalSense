@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { AlertController, AlertOptions, LoadingController, ModalController, ModalOptions, ToastController, ToastOptions } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Network } from '@capacitor/network';
 @Injectable({
   providedIn: 'root'
