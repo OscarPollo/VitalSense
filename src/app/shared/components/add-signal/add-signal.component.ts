@@ -4,7 +4,6 @@ import { Product } from 'src/app/models/product.model';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
-
 @Component({
   selector: 'app-add-signal',
   templateUrl: './add-signal.component.html',
@@ -32,18 +31,29 @@ export class AddSignalComponent implements OnInit {
   ngOnInit() {
     this.user = this.utilsSvc.getFromLocalStorage('user');
     this.form.controls.patient.setValue(this.product.id);
+    this.utilsSvc.initChart();
+    // Suscribirse a los datos recibidos del dispositivo BLE
+    this.utilsSvc.onDataReceived.subscribe(data => {
+      //console.log(data);
+      this.utilsSvc.addDataToChart(data);
+    });
   }
 
+  async submit() {
+    if (this.form.valid) {
+      //this.createRecord();
+      this.utilsSvc.initBLE();
+    }
+  }
+  // Función para agregar un retardo
+  async delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   setNumberInputs() {
     let { frecCard, tempCorp, frecResp } = this.form.controls;
     if (frecCard.value) frecCard.setValue(parseFloat(frecCard.value))
     if (tempCorp.value) tempCorp.setValue(parseFloat(tempCorp.value))
     if (frecResp.value) frecResp.setValue(parseFloat(frecResp.value))
-  }
-  submit() {
-    if (this.form.valid) {
-      this.createRecord();
-    }
   }
   getFormatedDate(currentDate: Date): string {
     const year = currentDate.getFullYear();
@@ -55,7 +65,7 @@ export class AddSignalComponent implements OnInit {
     const milliseconds = ('00' + currentDate.getMilliseconds()).slice(-3); // Añade ceros a los milisegundos si es necesario
 
     return `${year}_${month}_${day}_${hours}:${minutes}:${seconds}.${milliseconds}`;
-}
+  }
 
   async createRecord() {
     const loading = await this.utilsSvc.loading();
