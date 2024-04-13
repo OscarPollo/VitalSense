@@ -18,6 +18,7 @@ export class HeaderComponent  implements OnInit {
   ngOnInit() {}
   dismissModal(){
     this.utilSvc.dismissModal();
+    this.utilSvc.discBLE();
   }
   
 

@@ -2,9 +2,9 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, AlertOptions, LoadingController, ModalController, ModalOptions, ToastController, ToastOptions } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Observable, Subject  } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Network } from '@capacitor/network';
-import { BleClient } from '@capacitor-community/bluetooth-le';
+import { BleClient, numbersToDataView } from '@capacitor-community/bluetooth-le';
 import { Chart } from 'chart.js/auto';
 
 @Injectable({
@@ -13,6 +13,7 @@ import { Chart } from 'chart.js/auto';
 
 export class UtilsService {
   onDataReceived: Subject<any> = new Subject<any>();
+  deviceSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   loadingCtrl = inject(LoadingController);
   toastCtrl = inject(ToastController);
@@ -23,6 +24,7 @@ export class UtilsService {
 
   VITAL_SENSE = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E';
   VITAL_SENSE_C = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E';
+  VITAL_SENSE_D = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
 
   getOnlineStatus(): Observable<boolean> {
     return new Observable<boolean>(observer => {
@@ -176,75 +178,166 @@ export class UtilsService {
     if (data) return data;
   }
   dismissModal(data?: any) {
-    if (this.chart) {
-      this.chart.reset();
-    }
     return this.modalCtrl.dismiss(data);
-    
+
   }
 
   ///////////////////////////BLUETOOTH///////////////////////////
+  device: any; // Declarar la variable device como una propiedad de la clase
 
   async initBLE() {
     try {
       await BleClient.initialize({ androidNeverForLocation: true });
       console.log('Bluetooth initialized');
-      const device = await BleClient.requestDevice({
+      this.device = await BleClient.requestDevice({
         services: [this.VITAL_SENSE],
       });
-      console.log('Device paired', device);
-      await BleClient.connect(device.deviceId, (deviceId) => this.onDisconnect(deviceId));
-      console.log('connected to device', device);
+      console.log('Device paired', this.device);
+      await BleClient.connect(this.device.deviceId, (deviceId) => this.onDisconnect(deviceId));
+      console.log('Connected to device', this.device);
 
       // Suscribirse a las notificaciones de la característica de lectura
       await BleClient.startNotifications(
-        device.deviceId,
+        this.device.deviceId,
         this.VITAL_SENSE, // Reemplaza SERVICE_UUID con el UUID de tu servicio BLE
         this.VITAL_SENSE_C, // Reemplaza CHARACTERISTIC_UUID con el UUID de tu característica BLE
         (value) => {
           this.onDataReceived.next(parseFloat(String.fromCharCode.apply(null, new Uint8Array(value.buffer))));
         }
       );
-      
+      this.deviceSubject.next(this.device);
+      this.presentToast({
+        message: `conectado a ${this.device.name}`,
+        duration: 2500,
+        color: 'success',
+        position: 'middle',
+        icon: "alert-circle-outline"
+      })
+
     } catch (error) {
       console.log(error);
+      this.presentToast({
+        message: error,
+        duration: 2500,
+        color: 'danger',
+        position: 'middle',
+        icon: "alert-circle-outline"
+      })
     }
-  }
-  onDisconnect(deviceId: string): void {
-    console.log(`Device ${deviceId} disconnected`);
   }
 
-  ////////////////////GRAFICO////////////////////////
-    // Agregar datos al gráfico
-    addDataToChart(data: number) {
-      if (!this.chart) {
-        this.initChart();
+  onDisconnect(deviceId: string): void {
+    console.log(`Device ${deviceId} disconnected`);
+    this.presentToast({
+      message: `Desconectado de ${this.device.deviceId}`,
+      duration: 2500,
+      color: 'warning',
+      position: 'middle',
+      icon: "alert-circle-outline"
+    });
+    this.device = ""; // Reiniciar el dispositivo en utils.service.ts
+    this.deviceSubject.next(this.device);
+  }
+
+  async writeBLE(value: any) {
+    if (this.device) {
+      try {
+        await BleClient.write(this.device.deviceId, this.VITAL_SENSE, this.VITAL_SENSE_D, numbersToDataView(value));
+        console.log("mensaje enviado", value);
+      } catch (error) {
+        console.log('Error writing data:', error);
       }
-  
-      // Agregar el nuevo dato al conjunto de datos
-      this.chart.data.labels.push('');
-      this.chart.data.datasets.forEach(dataset => {
-        dataset.data.push(data);
-        console.log(dataset.data);
-      });
-  
-      // Actualizar el gráfico
-      this.chart.update();
     }
-  
-    initChart() {
-      this.chart = new Chart('canvas', {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: 'Senoidal Data',
-            data: [],
-            borderColor: 'blue',
-            tension: 0.1
-          }]
+  }
+
+
+
+  async discBLE() {
+    if (this.device) {
+      try {
+        await BleClient.stopNotifications(this.device.deviceId, this.VITAL_SENSE, this.VITAL_SENSE_C);
+        await BleClient.disconnect(this.device.deviceId);
+        this.device = "";
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+  ////////////////////GRAFICO////////////////////////
+
+  async updateChartWithArrayData(dataArray: number[]) {
+    if (!this.chart) {
+      this.initChart();
+    }
+
+    this.chart.data.labels = Array(dataArray.length).fill('');
+    this.chart.data.datasets.forEach(dataset => {
+      dataset.data = dataArray.slice();
+    });
+
+    // Actualizar el gráfico
+    this.chart.update();
+  }
+
+  adjAxesi() {
+    this.chart.options = {
+      maintainAspectRatio: true, // Mantener el aspecto del gráfico
+      responsive: true, // Permitir que el gráfico sea responsive
+      scales: {
+        y: {
+          min: 20000, // Valor mínimo en el eje Y
+          max: 50000, // Valor máximo en el eje Y            
         }
-      });
+      }
     }
-  
+  }
+  adjAxesf() {
+    this.chart.options = {
+      maintainAspectRatio: true, // Mantener el aspecto del gráfico
+      responsive: true, // Permitir que el gráfico sea responsive
+      scales: {
+        y: {
+          min: 10000, // Valor mínimo en el eje Y
+          max: 70000, // Valor máximo en el eje Y            
+        }
+      }
+    }
+  }
+  initChart() {
+    var dataFirst = {
+      label: "ECG",
+      data: [],
+      lineTension: .3,
+      fill: false,
+      borderColor: 'red'
+    };
+    // var dataSecond = {
+    //   label: "Car B - Speed (mph)",
+    //   data: [20, 15, 60, 60, 65, 30, 70],
+    //   lineTension: 0,
+    //   fill: false,
+    // borderColor: 'blue'
+    // };
+
+    var speedData = {
+      labels: [],
+      datasets: [dataFirst]
+    };
+
+    this.chart = new Chart('canvas', {
+      type: 'line',
+      data: speedData,
+      options: {
+        maintainAspectRatio: true, // Mantener el aspecto del gráfico
+        responsive: true, // Permitir que el gráfico sea responsive
+        scales: {
+          y: {
+            min: 20000, // Valor mínimo en el eje Y
+            max: 50000, // Valor máximo en el eje Y            
+          }
+        }
+      }
+    });
+  }
+
 }

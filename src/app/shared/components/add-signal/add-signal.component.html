@@ -21,67 +21,70 @@
       </ion-item>
     </ion-card>
 
-    <app-custom-input 
-      icon="heart" 
-      [control]="form.controls.frecCard" 
-      type="number" 
-      label="Heart rate"
-      (ionInput)="setNumberInputs()"
-    ></app-custom-input>
+    <ion-toolbar>
+      <ion-button expand="block" mode="ios" (click)="pairBLE()"  class="toolbar-button">
+        Connect device
+        <ion-icon slot="end" name="bluetooth"></ion-icon>
+      </ion-button>
+      <ion-button expand="block" mode="ios" (click)="takeReg()" [disabled]="!device" class="toolbar-button">
+        Take record
+        <ion-icon slot="end" name="play"></ion-icon>
+      </ion-button>
+      <ion-button expand="block" mode="ios" (click)="stopRec()" [disabled]="!device" class="toolbar-button">
+        Stop record
+        <ion-icon slot="end" name="stop"></ion-icon>
+      </ion-button>
+      <ion-button expand="block" mode="ios" (click)="discBLE()" [disabled]="!device" class="toolbar-button">
+        Disconnect device
+        <ion-icon slot="end" name="close-circle"></ion-icon>
+      </ion-button>
+    </ion-toolbar>
+
+    <ion-label *ngIf="device">
+      <div class="name">{{device.name}}</div>
+      <div class="data">
+        <strong>ID: </strong>{{device.deviceId}}<br>
+      </div>
+    </ion-label>
+
+    <div>
+      <canvas id="canvas" width="400" height="400"></canvas>
+    </div>
+
+    <app-custom-input icon="heart" [control]="form.controls.frecCard" type="number" label="Heart rate"
+      (ionInput)="setNumberInputs()"></app-custom-input>
     <div class="validators" *ngIf="form.controls.frecCard.errors && form.controls.frecCard.touched">
       <div *ngIf="form.controls.frecCard.errors?.['required']">Heart rate is required</div>
     </div>
 
-    <app-custom-input 
-      icon="thermometer" 
-      [control]="form.controls.tempCorp" 
-      type="number" 
-      label="Body temperature"
-      (ionInput)="setNumberInputs()"
-    ></app-custom-input>
+    <app-custom-input icon="thermometer" [control]="form.controls.tempCorp" type="number" label="Body temperature"
+      (ionInput)="setNumberInputs()"></app-custom-input>
     <div class="validators" *ngIf="form.controls.tempCorp.errors && form.controls.tempCorp.touched">
       <div *ngIf="form.controls.tempCorp.errors?.['required']">Temperature is required</div>
     </div>
 
-    <app-custom-input 
-    icon="shirt" 
-    [control]="form.controls.frecResp" 
-    type="number" 
-    label="Breathing frequency"
-    (ionInput)="setNumberInputs()"
-    ></app-custom-input>
+    <app-custom-input icon="shirt" [control]="form.controls.frecResp" type="number" label="Breathing frequency"
+      (ionInput)="setNumberInputs()"></app-custom-input>
     <div class="validators" *ngIf="form.controls.frecResp.errors && form.controls.frecResp.touched">
-      <div *ngIf="form.controls.frecResp.errors?.['required']">Respiratory  rate is required</div>
+      <div *ngIf="form.controls.frecResp.errors?.['required']">Respiratory rate is required</div>
     </div>
 
-    <app-custom-input 
-    icon="id-card" 
-    [control]="form.controls.observation" 
-    type="text" 
-    label="Notes"
-    ></app-custom-input>
+    <app-custom-input icon="id-card" [control]="form.controls.observation" type="text" label="Notes"></app-custom-input>
     <div class="validators" *ngIf="form.controls.observation.errors && form.controls.observation.touched">
       <div *ngIf="form.controls.observation.errors?.['required']">Observation is required</div>
     </div>
 
-    <app-custom-input 
-    icon="link" 
-    [control]="form.controls.URLarchive" 
-    type="text" 
-    label="URL"
-    ></app-custom-input>
+    <app-custom-input icon="link" [control]="form.controls.URLarchive" type="text" label="URL"></app-custom-input>
     <div class="validators" *ngIf="form.controls.URLarchive.errors && form.controls.URLarchive.touched">
       <div *ngIf="form.controls.URLarchive.errors?.['required']">URL is required</div>
     </div>
 
     <ion-button class="submit" expand="block" mode="ios" type="submit" [disabled]="form.invalid">
-      Add record 
+      Add record
       <ion-icon slot="end" name="play"></ion-icon>
     </ion-button>
 
-    <div>
-      <canvas id="canvas" width="400" height="400"></canvas>
-    </div>
+
 
   </form>
 </ion-content>

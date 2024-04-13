@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Product } from 'src/app/models/product.model';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
@@ -13,42 +14,90 @@ export class AddSignalComponent implements OnInit {
   @Input() isConnected: boolean;
   @Input() product: Product;
 
+  user = {} as User;
+
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
+  device:any;
+  deviceSubscription: Subscription; // Suscripción al Subject en UtilsService
+  onDataReceivedSubscription: Subscription;
+  regActual: any[] = []; // Arreglo para almacenar los datos recibidos
 
-  user = {} as User;
+  ngOnInit() {
+    this.user = this.utilsSvc.getFromLocalStorage('user');
+    this.form.controls.patient.setValue(this.product.id);
+    this.utilsSvc.initChart();
+    this.regActual=[];
+
+    // Suscribirse a los datos recibidos del dispositivo BLE
+    this.onDataReceivedSubscription = this.utilsSvc.onDataReceived.subscribe(async data => {
+      this.regActual.push(data); // Agregar los datos al arreglo regActual
+      if (this.regActual.length == 1000) {
+        await this.utilsSvc.writeBLE([2]);
+        this.utilsSvc.adjAxesf();
+        await this.utilsSvc.updateChartWithArrayData(this.regActual);
+      }
+      if (this.regActual.length > 50 && this.regActual.length%10==0){
+        let signalV=this.regActual.slice(-50,-10);
+        await this.utilsSvc.updateChartWithArrayData(signalV);
+      }
+      //this.utilsSvc.addDataToChart(data);
+    });
+    this.deviceSubscription = this.utilsSvc.deviceSubject.subscribe((device) => {
+      this.device = device;
+    });
+  }
+  ngOnDestroy(){
+    if (this.onDataReceivedSubscription) {
+      this.onDataReceivedSubscription.unsubscribe();
+    }
+    if (this.deviceSubscription) {
+      this.deviceSubscription.unsubscribe();
+    }
+    this.utilsSvc.discBLE();
+
+  }
+
+  async pairBLE(){
+    this.utilsSvc.initBLE();
+  }
+  async takeReg(){
+    this.regActual=[];
+    this.utilsSvc.updateChartWithArrayData(this.regActual);
+    this.utilsSvc.adjAxesi();
+    await this.utilsSvc.writeBLE([1]);
+  }
+  async stopRec(){
+    await this.utilsSvc.writeBLE([2]);
+  }
+
+  async discBLE(){
+    await this.utilsSvc.discBLE();
+  }
+  
+  async submit() {
+    if (this.form.valid) {
+      //this.createRecord();
+    }
+  }
+
+  // Función para agregar un retardo
+  async delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 
   form = new FormGroup({
     patient: new FormControl(''),
     date: new FormControl(''),
-    frecCard: new FormControl(null, [Validators.required]), // Se agrega validación para que la edad sea un número mayor o igual a cero
+    frecCard: new FormControl(null, [Validators.required]), 
     tempCorp: new FormControl(null, [Validators.required]),
     frecResp: new FormControl(null, [Validators.required]),
 
     observation: new FormControl('', [Validators.required]),
     URLarchive: new FormControl('', [Validators.required])
   })
-  ngOnInit() {
-    this.user = this.utilsSvc.getFromLocalStorage('user');
-    this.form.controls.patient.setValue(this.product.id);
-    this.utilsSvc.initChart();
-    // Suscribirse a los datos recibidos del dispositivo BLE
-    this.utilsSvc.onDataReceived.subscribe(data => {
-      //console.log(data);
-      this.utilsSvc.addDataToChart(data);
-    });
-  }
-
-  async submit() {
-    if (this.form.valid) {
-      //this.createRecord();
-      this.utilsSvc.initBLE();
-    }
-  }
-  // Función para agregar un retardo
-  async delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  
   setNumberInputs() {
     let { frecCard, tempCorp, frecResp } = this.form.controls;
     if (frecCard.value) frecCard.setValue(parseFloat(frecCard.value))
