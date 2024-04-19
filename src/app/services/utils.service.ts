@@ -285,8 +285,8 @@ export class UtilsService {
       responsive: true, // Permitir que el gráfico sea responsive
       scales: {
         y: {
-          min: 20000, // Valor mínimo en el eje Y
-          max: 50000, // Valor máximo en el eje Y            
+          min: 10000, // Valor mínimo en el eje Y
+          max: 70000, // Valor máximo en el eje Y            
         }
       }
     }

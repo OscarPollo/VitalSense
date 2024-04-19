@@ -37,8 +37,8 @@ export class AddSignalComponent implements OnInit {
         this.utilsSvc.adjAxesf();
         await this.utilsSvc.updateChartWithArrayData(this.regActual);
       }
-      if (this.regActual.length > 50 && this.regActual.length%10==0){
-        let signalV=this.regActual.slice(-50,-10);
+      if (this.regActual.length > 100 && this.regActual.length%80==0){
+        let signalV=this.regActual.slice(-101,-1);
         await this.utilsSvc.updateChartWithArrayData(signalV);
       }
       //this.utilsSvc.addDataToChart(data);
