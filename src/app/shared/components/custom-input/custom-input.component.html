@@ -1,5 +1,6 @@
-<ion-item class="custom-input" lines="none">
-  <ion-icon color="secondary" *ngIf="icon" slot="start" [name]="icon"></ion-icon>
+<ion-item class="custom-input" lines="none" [disabled]="disabled === 'disabled'">
+  <ion-icon color="secondary" *ngIf="icon && disabled !== 'disabled'" slot="start" [name]="icon"></ion-icon>
+  <ion-icon color="secondary" *ngIf="icon && disabled === 'disabled'" slot="start" [name]="icon" style="margin-right: 5px;"></ion-icon>
   
   
   <ion-input 

@@ -7,6 +7,7 @@ import { AddUpdateProductComponent } from 'src/app/shared/components/add-update-
 import { AddSignalComponent } from 'src/app/shared/components/add-signal/add-signal.component';
 import { orderBy, where } from 'firebase/firestore';
 import { Subscription } from 'rxjs';
+import { Registro } from 'src/app/models/registro.model';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -98,8 +99,12 @@ export class HomePage implements OnInit {
     this.isChanged = false;
   }
 
-  async createRecord(record: any, newProductId: string) {
+  async createRecord(record: Registro, newProductId: string) {
     let path = `users/${this.user().uid}/patients/${newProductId}/records/${record.date}`;
+    let regPath = `${this.user().uid}/${record.patient}/${record.date.slice(0,-4)}.txt`;
+    let regUrl = await this.firebaseSvc.uploadJson(regPath, record.URLarchive);
+    record.URLarchive=regUrl;
+
     this.firebaseSvc.setDocument(path, record).then(async res => {
       // //subir imagen y botener la url
       // let dataUrl = this.form.value.image;
@@ -225,7 +230,7 @@ export class HomePage implements OnInit {
       this.loading = false;
     }
   }
-  //AGREGAR O ACTUALIZAR PACIENTE
+  //AGREGAR REGISTRO
   async addSignal(product?: Product) {
     let success = await this.utilsSvc.presentModal({
       component: AddSignalComponent,

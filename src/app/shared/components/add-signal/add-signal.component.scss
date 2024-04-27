@@ -1,3 +1,26 @@
 .toolbar-button {
-    margin-right: 5px; /* Espacio entre los botones */
-  }
+  margin-right: auto;
+  margin-left: auto;
+  /* Espacio entre los botones */
+}
+
+ion-card {
+  border-radius: 15px;
+  display: flex;
+  margin: 10px;
+  gap: 100px;
+}
+
+.divChart {
+  width: 100%;
+  height: 50vw;
+  /* Altura fija para la orientación vertical */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.validators {
+  margin-top: 10px; /* Un poco de espacio entre el elemento anterior */
+  color: var(--ion-color-danger); /* Color del texto para mensajes de error */
+  font-size: 14px; /* Tamaño del texto para mensajes de error */
+}

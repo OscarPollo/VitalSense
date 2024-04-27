@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc, deleteField, getDocs  } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc, deleteField, getDocs } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { getStorage, uploadString, ref, getDownloadURL, deleteObject } from 'firebase/storage'
@@ -17,7 +17,7 @@ export class FirebaseService {
   storage = inject(AngularFireStorage);
 
   //////////////////////////////AUTENTICACION//////////////////////////////////
-  
+
   getAuth() {
     return getAuth();
   }
@@ -88,6 +88,12 @@ export class FirebaseService {
     return uploadString(ref(getStorage(), path), data_url, 'data_url').then(() => {
       return getDownloadURL(ref(getStorage(), path))
     })
+  }
+
+  async uploadJson(path: string, jsonData: string) {
+    return uploadString(ref(getStorage(), path), jsonData, 'raw').then(() => {
+      return getDownloadURL(ref(getStorage(), path));
+    });
   }
 
   //OBTENER RUTA DE LA IMAGEN CON SU URL

@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Network } from '@capacitor/network';
 import { BleClient, numbersToDataView } from '@capacitor-community/bluetooth-le';
 import { Chart } from 'chart.js/auto';
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 @Injectable({
   providedIn: 'root'
@@ -202,7 +203,8 @@ export class UtilsService {
         this.VITAL_SENSE, // Reemplaza SERVICE_UUID con el UUID de tu servicio BLE
         this.VITAL_SENSE_C, // Reemplaza CHARACTERISTIC_UUID con el UUID de tu característica BLE
         (value) => {
-          this.onDataReceived.next(parseFloat(String.fromCharCode.apply(null, new Uint8Array(value.buffer))));
+          const dataString = String.fromCharCode.apply(null, new Uint8Array(value.buffer));
+          this.onDataReceived.next(dataString);
         }
       );
       this.deviceSubject.next(this.device);
@@ -279,29 +281,43 @@ export class UtilsService {
     this.chart.update();
   }
 
-  adjAxesi() {
-    this.chart.options = {
-      maintainAspectRatio: true, // Mantener el aspecto del gráfico
-      responsive: true, // Permitir que el gráfico sea responsive
-      scales: {
-        y: {
-          min: 10000, // Valor mínimo en el eje Y
-          max: 70000, // Valor máximo en el eje Y            
-        }
+  permitZoomPan() {
+    this.chart.options.plugins = {
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x' // Permitir desplazamiento en el eje X
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'x', // Permitir zoom en el eje X 
+        },
+        // limits: {
+        //   y: {
+        //     min: 5000, // Valor mínimo en el eje Y
+        //     max: 75000, // Valor máximo en el eje Y
+        //   }
+        // },
       }
     }
+    this.chart.update();
   }
-  adjAxesf() {
-    this.chart.options = {
-      maintainAspectRatio: true, // Mantener el aspecto del gráfico
-      responsive: true, // Permitir que el gráfico sea responsive
-      scales: {
-        y: {
-          min: 10000, // Valor mínimo en el eje Y
-          max: 70000, // Valor máximo en el eje Y            
-        }
+  rejectZoomPan(){
+    this.chart.options.plugins = {};
+  }
+  resetAxes() {
+    this.chart.options.scales = {
+      y: {
+        min: 10000, // Valor mínimo en el eje Y
+        max: 70000, // Valor máximo en el eje Y            
       }
     }
+    this.chart.update();
   }
   initChart() {
     var dataFirst = {
@@ -332,11 +348,29 @@ export class UtilsService {
         responsive: true, // Permitir que el gráfico sea responsive
         scales: {
           y: {
-            min: 20000, // Valor mínimo en el eje Y
-            max: 50000, // Valor máximo en el eje Y            
+            min: 10000, // Valor mínimo en el eje Y
+            max: 70000, // Valor máximo en el eje Y            
           }
+        },
+        plugins: {
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: 'x' // Permitir desplazamiento en el eje X
+            },
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              mode: 'x', // Permitir zoom en el eje X 
+            },    
+          }                 
         }
-      }
+      },
+      plugins: [zoomPlugin]
     });
   }
 

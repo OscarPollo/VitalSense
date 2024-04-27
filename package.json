@@ -34,6 +34,7 @@
     "@ionic/angular": "^7.0.0",
     "@ionic/pwa-elements": "^3.2.2",
     "chart.js": "^4.4.2",
+    "chartjs-plugin-zoom": "^2.0.1",
     "firebase": "^10.8.1",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",

@@ -18,36 +18,53 @@ export class AddSignalComponent implements OnInit {
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
-  device:any;
+  device: any;
   deviceSubscription: Subscription; // Suscripción al Subject en UtilsService
   onDataReceivedSubscription: Subscription;
   regActual: any[] = []; // Arreglo para almacenar los datos recibidos
 
   ngOnInit() {
     this.user = this.utilsSvc.getFromLocalStorage('user');
-    this.form.controls.patient.setValue(this.product.id);
     this.utilsSvc.initChart();
-    this.regActual=[];
+    this.utilsSvc.rejectZoomPan();
+    this.regActual = [];
 
-    // Suscribirse a los datos recibidos del dispositivo BLE
+    // Suscribirse a los datos recibidos del ECG
     this.onDataReceivedSubscription = this.utilsSvc.onDataReceived.subscribe(async data => {
-      this.regActual.push(data); // Agregar los datos al arreglo regActual
-      if (this.regActual.length == 1000) {
-        await this.utilsSvc.writeBLE([2]);
-        this.utilsSvc.adjAxesf();
-        await this.utilsSvc.updateChartWithArrayData(this.regActual);
+      const prefix = data.substring(0, 3); // Obtener los primeros 3 caracteres como prefijo
+      if (prefix === "tem") {
+        const dataBPM = parseFloat(data.substring(3)); // Quitar el prefijo y convertir a número
+        this.form.controls.tempCorp.setValue(dataBPM);
+        this.setNumberInputs();
       }
-      if (this.regActual.length > 100 && this.regActual.length%80==0){
-        let signalV=this.regActual.slice(-101,-1);
-        await this.utilsSvc.updateChartWithArrayData(signalV);
+      else if (prefix === "ecg") {
+        // Los datos son del ECGthis.onDataReceivedECG.next(
+        const dataECG = parseFloat(data.substring(3)); // Quitar el prefijo y convertir a número
+        this.regActual.push(dataECG); // Agregar los datos al arreglo regActual
+        if (this.regActual.length > 120 && this.regActual.length % 100 == 0) {
+          let signalV = this.regActual.slice(-121, -1);
+          await this.utilsSvc.updateChartWithArrayData(signalV);
+        }
+        if (this.regActual.length == 1200) {
+          await this.utilsSvc.writeBLE([2]);
+          await this.utilsSvc.updateChartWithArrayData(this.regActual);
+          this.utilsSvc.permitZoomPan();
+        }
+        
       }
-      //this.utilsSvc.addDataToChart(data);
+      else if (prefix === "bpm") {
+        const dataBPM = parseFloat(data.substring(3)); // Quitar el prefijo y convertir a número
+        this.form.controls.frecCard.setValue(dataBPM);
+        this.setNumberInputs();
+      }
+
     });
+    // Suscribirse a el dispositivo conectado
     this.deviceSubscription = this.utilsSvc.deviceSubject.subscribe((device) => {
       this.device = device;
     });
   }
-  ngOnDestroy(){
+  ngOnDestroy() {
     if (this.onDataReceivedSubscription) {
       this.onDataReceivedSubscription.unsubscribe();
     }
@@ -58,26 +75,37 @@ export class AddSignalComponent implements OnInit {
 
   }
 
-  async pairBLE(){
+  async pairBLE() {
     this.utilsSvc.initBLE();
   }
-  async takeReg(){
-    this.regActual=[];
+  async takeReg() {
+    this.form.reset();
+
+    this.form.controls.patient.setValue(this.product.id);
+
+    let currentDate = new Date(Date.now());
+    this.form.controls.date.setValue(this.getFormatedDate(currentDate));
+
+    this.utilsSvc.rejectZoomPan();
+    this.utilsSvc.resetAxes();
+    this.regActual = [];
     this.utilsSvc.updateChartWithArrayData(this.regActual);
-    this.utilsSvc.adjAxesi();
     await this.utilsSvc.writeBLE([1]);
   }
-  async stopRec(){
+  async stopRec() {
     await this.utilsSvc.writeBLE([2]);
+    this.utilsSvc.resetAxes();
+    await this.utilsSvc.updateChartWithArrayData(this.regActual);
+    this.utilsSvc.permitZoomPan();
   }
 
-  async discBLE(){
+  async discBLE() {
     await this.utilsSvc.discBLE();
   }
-  
+
   async submit() {
     if (this.form.valid) {
-      //this.createRecord();
+      this.createRecord();
     }
   }
 
@@ -88,21 +116,19 @@ export class AddSignalComponent implements OnInit {
 
 
   form = new FormGroup({
-    patient: new FormControl(''),
-    date: new FormControl(''),
-    frecCard: new FormControl(null, [Validators.required]), 
+    patient: new FormControl('', [Validators.required]),
+    date: new FormControl('', [Validators.required]),
+    frecCard: new FormControl(null, [Validators.required]),
     tempCorp: new FormControl(null, [Validators.required]),
-    frecResp: new FormControl(null, [Validators.required]),
 
     observation: new FormControl('', [Validators.required]),
-    URLarchive: new FormControl('', [Validators.required])
+    URLarchive: new FormControl('')
   })
-  
+
   setNumberInputs() {
-    let { frecCard, tempCorp, frecResp } = this.form.controls;
+    let { frecCard, tempCorp } = this.form.controls;
     if (frecCard.value) frecCard.setValue(parseFloat(frecCard.value))
     if (tempCorp.value) tempCorp.setValue(parseFloat(tempCorp.value))
-    if (frecResp.value) frecResp.setValue(parseFloat(frecResp.value))
   }
   getFormatedDate(currentDate: Date): string {
     const year = currentDate.getFullYear();
@@ -119,23 +145,19 @@ export class AddSignalComponent implements OnInit {
   async createRecord() {
     const loading = await this.utilsSvc.loading();
     await loading.present();
-    let currentDate = new Date(Date.now());
-    this.form.controls.date.setValue(this.getFormatedDate(currentDate));
+
+    const regJson = JSON.stringify(this.regActual);
+
 
     if (this.isConnected) {
-      let path = `users/${this.user.uid}/patients/${this.product.id}/records/${this.getFormatedDate(currentDate)}`;
+      //subir imagen y botener la url
+      let regPath = `${this.user.uid}/${this.product.id}/${this.form.controls.date.value.slice(0,-4)}.txt`;
+      let regUrl = await this.firebaseSvc.uploadJson(regPath, regJson);
+      this.form.controls.URLarchive.setValue(regUrl);
+
+      let path = `users/${this.user.uid}/patients/${this.product.id}/records/${this.form.controls.date.value}`;
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
-
-        // //subir imagen y botener la url
-        // let dataUrl = this.form.value.image;
-        // if (dataUrl) {
-        //   let imagePath = `${this.user.uid}/${res.id}/${Date.now()}`;
-        //   let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-
-        //   path = `users/${this.user.uid}/patients/${res.id}`
-        //   await this.firebaseSvc.updateDocument(path, { URLim: imageUrl });
-        // }
-
+        
         this.utilsSvc.dismissModal({ succes: true });
 
         this.utilsSvc.presentToast({
@@ -159,6 +181,7 @@ export class AddSignalComponent implements OnInit {
       })
     } else {
       // Si no estamos conectados, creamos un ID provisional utilizando un timestamp
+      this.form.controls.URLarchive.setValue(regJson);
       let recordWithProvisionalId = { ...this.form.value };
       let records = this.utilsSvc.getFromLocalStorage('records') || []; // Obtener los productos del almacenamiento local o crear un nuevo array si no existen
       records.push(recordWithProvisionalId); // Agregar el formulario al array de productos
