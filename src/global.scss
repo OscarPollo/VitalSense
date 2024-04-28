@@ -26,13 +26,14 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 
-@media (min-width: 760px) {
+@media (min-width: 700px) {
   .auth-form {
     width: 500px;
   }
 
   .add-update-modal {
-    --height: 680px;
+    --height: 100%;
+    --width: 100%
   }
 }
 
