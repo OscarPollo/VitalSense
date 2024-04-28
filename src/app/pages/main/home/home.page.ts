@@ -100,21 +100,11 @@ export class HomePage implements OnInit {
   }
 
   async createRecord(record: Registro, newProductId: string) {
-    let path = `users/${this.user().uid}/patients/${newProductId}/records/${record.date}`;
     let regPath = `${this.user().uid}/${record.patient}/${record.date.slice(0,-4)}.txt`;
     let regUrl = await this.firebaseSvc.uploadJson(regPath, record.URLarchive);
     record.URLarchive=regUrl;
-
+    let path = `users/${this.user().uid}/patients/${newProductId}/records/${record.date}`;
     this.firebaseSvc.setDocument(path, record).then(async res => {
-      // //subir imagen y botener la url
-      // let dataUrl = this.form.value.image;
-      // if (dataUrl) {
-      //   let imagePath = `${this.user.uid}/${res.id}/${Date.now()}`;
-      //   let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-
-      //   path = `users/${this.user.uid}/patients/${res.id}`
-      //   await this.firebaseSvc.updateDocument(path, { URLim: imageUrl });
-      // }
     }).catch(error => {
       console.log(error);
       this.utilsSvc.presentToast({

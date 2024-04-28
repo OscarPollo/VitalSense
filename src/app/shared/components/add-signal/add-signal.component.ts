@@ -162,7 +162,7 @@ export class AddSignalComponent implements OnInit {
 
         this.utilsSvc.presentToast({
           message: 'Record added',
-          duration: 1500,
+          duration: 3000,
           color: 'success',
           position: 'middle',
           icon: "checkmark-circle-outline"
@@ -191,7 +191,7 @@ export class AddSignalComponent implements OnInit {
 
       this.utilsSvc.presentToast({
         message: 'Record added assyncly',
-        duration: 1500,
+        duration: 3000,
         color: 'success',
         position: 'middle',
         icon: "checkmark-circle-outline"
