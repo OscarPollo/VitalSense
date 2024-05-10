@@ -1,0 +1,81 @@
+<app-header [isModal]="true" [title]="'Select signal'"></app-header>
+<ion-content>
+  <!-- TARJETA -->
+  <ion-card mode="ios" color="primary" class="d-flex-center ion-text-center"
+    style="margin-bottom: 5px; margin-top: 5px;">
+    <ion-item class="product-item" style="--padding-top: 0; --background: var(--ion-color-primary); ">
+      <ion-avatar slot="start">
+        <img *ngIf="product.image" [src]="product.image" />
+        <ion-icon *ngIf="!product.image" name="person-circle-outline" class="iiconno"></ion-icon>
+      </ion-avatar>
+      <ion-label>
+        <div class="name">{{product.name}}</div>
+        <div class="data">
+          <strong>ID: </strong>{{product.id}}<br>
+          <strong>Age: </strong>{{product.age}} <br>
+          <strong>Gender: </strong>{{product.gender}}<br>
+          <strong>Obs:</strong>{{product.observation}}<br>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+  <div class="divChart">
+    <canvas id="canvas" width="400" height="200"></canvas>
+  </div>
+
+  <!-- MOSTRAR LISTA DE PACIENTES -->
+  <ion-list *ngIf="!loading">
+    <ion-item-sliding class="product-item" *ngFor="let p of records">
+      <ion-item>
+        <ion-label>
+          <div class="name">{{p.date}}</div>
+          <div class="data">
+            <strong>BPM: </strong>{{p.frecCard}}<br>
+            <strong>Temp: </strong>{{p.tempCorp}} <br>
+            <strong>Observation: </strong>{{p.observation}}<br>
+          </div>
+        </ion-label>
+      </ion-item>
+      <ion-item-options>
+
+        <ion-item-option (click)="showSignal(p)">
+          <ion-icon class="option-btn" name="pulse"></ion-icon>
+        </ion-item-option>
+
+        <ion-item-option (click)="confirmDeleteSignal(p)" color="danger">
+          <ion-icon class="option-btn" name="trash"></ion-icon>
+        </ion-item-option>
+
+        <!-- <ion-item-option (click)="addUpdateProduct(p)" color="tertiary">
+          <ion-icon class="option-btn" name="create"></ion-icon>
+        </ion-item-option>
+
+        <ion-item-option (click)="confirmDeleteProduct(p)" color="danger" [disabled]="!isConnected">
+          <ion-icon class="option-btn" name="person-remove"></ion-icon>
+        </ion-item-option> -->
+
+      </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- no hay PACIENTES disponibles -->
+  <div *ngIf="!loading && !records.length" class="empty">
+    <ion-icon name="shield"></ion-icon>
+    <h3>There are no registered patients yet</h3>
+  </div>
+
+  <!-- MOSTRAR PACIENTES CARGANDO -->
+  <ion-list *ngIf="loading">
+    <ion-item class="product-item" *ngFor="let p of [1,1,1]">
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <div> <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></div>
+        <div> <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text></div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

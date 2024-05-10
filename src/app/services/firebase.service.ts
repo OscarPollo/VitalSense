@@ -6,7 +6,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc, deleteField, getDocs } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { getStorage, uploadString, ref, getDownloadURL, deleteObject } from 'firebase/storage'
+import { getStorage, uploadString, ref, getDownloadURL, deleteObject, getBytes } from 'firebase/storage'
 @Injectable({
   providedIn: 'root'
 })
@@ -104,6 +104,20 @@ export class FirebaseService {
   //ELIMINAR ARCHIVO DEL STORAGE
   deleteFile(path: string) {
     return deleteObject(ref(getStorage(), path));
+  }
+  //OBTENER ARCHIVO
+  async downloadFile(storageURL: string) {
+    const response = await fetch(storageURL);
+    if (!response.ok) {
+      throw new Error('Failed to fetch file data');
+    }
+
+    const buffer = await response.arrayBuffer();
+    const decoder = new TextDecoder('utf-8');
+    const text = decoder.decode(buffer);
+    const numbers = text.split(',').map(num => parseInt(num.trim(), 10));
+    
+    return numbers; 
   }
 }
 

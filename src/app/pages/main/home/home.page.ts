@@ -5,6 +5,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AddUpdateProductComponent } from 'src/app/shared/components/add-update-product/add-update-product.component';
 import { AddSignalComponent } from 'src/app/shared/components/add-signal/add-signal.component';
+import { SelectSignalComponent } from 'src/app/shared/components/select-signal/select-signal.component';
 import { orderBy, where } from 'firebase/firestore';
 import { Subscription } from 'rxjs';
 import { Registro } from 'src/app/models/registro.model';
@@ -184,6 +185,7 @@ export class HomePage implements OnInit {
   }
   //OBTENER PRODUCTOS
   getProducts() {
+    this.loading = false;
     console.log(this.isConnected);
     if (this.isConnected) {
       let path = `users/${this.user().uid}/patients`;
@@ -219,6 +221,16 @@ export class HomePage implements OnInit {
       }
       this.loading = false;
     }
+  }
+  //SELECCIONAR REGISTRO
+  async selectSignal(product?: Product) {
+    await this.utilsSvc.presentModal({
+      component: SelectSignalComponent,
+      cssClass: 'add-update-modal',
+      componentProps: {
+        product
+      }
+    })
   }
   //AGREGAR REGISTRO
   async addSignal(product?: Product) {

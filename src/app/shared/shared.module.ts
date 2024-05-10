@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddUpdateProductComponent } from './components/add-update-product/add-update-product.component';
 import { AddSignalComponent } from './components/add-signal/add-signal.component';
+import { SelectSignalComponent } from './components/select-signal/select-signal.component';
 
 
 
@@ -17,7 +18,8 @@ import { AddSignalComponent } from './components/add-signal/add-signal.component
     CustomInputComponent,
     LogoComponent,
     AddUpdateProductComponent,
-    AddSignalComponent
+    AddSignalComponent,
+    SelectSignalComponent
   ],
   exports: [
     HeaderComponent,
@@ -25,7 +27,8 @@ import { AddSignalComponent } from './components/add-signal/add-signal.component
     LogoComponent,
     ReactiveFormsModule,
     AddUpdateProductComponent,
-    AddSignalComponent
+    AddSignalComponent,
+    SelectSignalComponent
   ],
   imports: [
     CommonModule,

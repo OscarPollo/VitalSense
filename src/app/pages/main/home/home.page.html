@@ -49,7 +49,7 @@
           <ion-icon class="option-btn" name="bluetooth"></ion-icon>
         </ion-item-option>
 
-        <ion-item-option color="secondary" [disabled]="!isConnected || !p.id">
+        <ion-item-option (click)="selectSignal(p)"color="secondary" [disabled]="!isConnected || !p.id">
           <ion-icon class="option-btn" name="pulse"></ion-icon>
         </ion-item-option>
 
