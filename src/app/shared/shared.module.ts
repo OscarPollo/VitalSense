@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddUpdateProductComponent } from './components/add-update-product/add-update-product.component';
 import { AddSignalComponent } from './components/add-signal/add-signal.component';
 import { SelectSignalComponent } from './components/select-signal/select-signal.component';
+import { CreditosComponent } from './components/creditos/creditos.component';
 
 
 
@@ -19,7 +20,8 @@ import { SelectSignalComponent } from './components/select-signal/select-signal.
     LogoComponent,
     AddUpdateProductComponent,
     AddSignalComponent,
-    SelectSignalComponent
+    SelectSignalComponent,
+    CreditosComponent
   ],
   exports: [
     HeaderComponent,
@@ -28,7 +30,8 @@ import { SelectSignalComponent } from './components/select-signal/select-signal.
     ReactiveFormsModule,
     AddUpdateProductComponent,
     AddSignalComponent,
-    SelectSignalComponent
+    SelectSignalComponent,
+    CreditosComponent
   ],
   imports: [
     CommonModule,

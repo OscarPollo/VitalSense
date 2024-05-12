@@ -4,6 +4,7 @@ import { Product } from 'src/app/models/product.model';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { CreditosComponent } from 'src/app/shared/components/creditos/creditos.component';
 
 @Component({
   selector: 'app-profile',
@@ -56,6 +57,15 @@ export class ProfilePage implements OnInit {
       })
     }).finally(() => {
       loading.dismiss();
+    })
+  }
+  //AGREGAR REGISTRO
+  async showCredits() {
+    await this.utilsSvc.presentModal({
+      component: CreditosComponent,
+      cssClass: 'add-update-modal',
+      componentProps: {
+      }
     })
   }
 }

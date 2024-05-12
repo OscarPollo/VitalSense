@@ -41,8 +41,6 @@ export class SelectSignalComponent implements OnInit {
     let sub = this.firebaseSvc.getCollectionData(path, query).subscribe({
       next: (res: any) => {
         this.records = res;
-        console.log("datos del firebase")
-        console.log(this.records);
         this.loading = false;
         sub.unsubscribe();
       },
