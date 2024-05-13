@@ -9,6 +9,7 @@ import { AddUpdateProductComponent } from './components/add-update-product/add-u
 import { AddSignalComponent } from './components/add-signal/add-signal.component';
 import { SelectSignalComponent } from './components/select-signal/select-signal.component';
 import { CreditosComponent } from './components/creditos/creditos.component';
+import { TutorialComponent } from './components/tutorial/tutorial.component';
 
 
 
@@ -21,7 +22,8 @@ import { CreditosComponent } from './components/creditos/creditos.component';
     AddUpdateProductComponent,
     AddSignalComponent,
     SelectSignalComponent,
-    CreditosComponent
+    CreditosComponent,
+    TutorialComponent
   ],
   exports: [
     HeaderComponent,
@@ -31,7 +33,8 @@ import { CreditosComponent } from './components/creditos/creditos.component';
     AddUpdateProductComponent,
     AddSignalComponent,
     SelectSignalComponent,
-    CreditosComponent
+    CreditosComponent,
+    TutorialComponent
   ],
   imports: [
     CommonModule,

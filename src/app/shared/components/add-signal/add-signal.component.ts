@@ -5,6 +5,7 @@ import { Product } from 'src/app/models/product.model';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { TutorialComponent } from '../tutorial/tutorial.component';
 @Component({
   selector: 'app-add-signal',
   templateUrl: './add-signal.component.html',
@@ -50,7 +51,7 @@ export class AddSignalComponent implements OnInit {
           await this.utilsSvc.updateChartWithArrayData(this.regActual);
           this.utilsSvc.permitZoomPan();
         }
-        
+
       }
       else if (prefix === "bpm") {
         const dataBPM = parseFloat(data.substring(3)); // Quitar el prefijo y convertir a número
@@ -74,8 +75,18 @@ export class AddSignalComponent implements OnInit {
     this.utilsSvc.discBLE();
 
   }
+  //AGREGAR REGISTRO
+  async showTuto() {
+    let success = await this.utilsSvc.presentModal({
+      component: TutorialComponent,
+      cssClass: 'add-update-modal',
+      componentProps: {
+      }
+    })
+  }
 
   async pairBLE() {
+    await this.showTuto();
     this.utilsSvc.initBLE();
   }
   async takeReg() {
@@ -151,13 +162,13 @@ export class AddSignalComponent implements OnInit {
 
     if (this.isConnected) {
       //subir imagen y botener la url
-      let regPath = `${this.user.uid}/${this.product.id}/${this.form.controls.date.value.slice(0,-4)}.txt`;
+      let regPath = `${this.user.uid}/${this.product.id}/${this.form.controls.date.value.slice(0, -4)}.txt`;
       let regUrl = await this.firebaseSvc.uploadJson(regPath, regJson);
       this.form.controls.URLarchive.setValue(regUrl);
 
       let path = `users/${this.user.uid}/patients/${this.product.id}/records/${this.form.controls.date.value}`;
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
-        
+
         this.utilsSvc.dismissModal({ succes: true });
 
         this.utilsSvc.presentToast({
