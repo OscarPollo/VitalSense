@@ -135,26 +135,6 @@
       <ion-icon slot="end" name="play"></ion-icon>
     </ion-button>
 
-    <ng-container *ngIf="this.utilsSvc.bluetoothScanResults.length>0">
-      <ion-item *ngFor="let scanResult of bluetoothScanResults">
-        <ion-label>
-          <h2>{{scanResult.device?.name ?? "NO name" }}</h2>
-          <p style="font-size: 8px">{{scanResult.device.deviceId}}</p>
-        </ion-label>
-
-        <!-- <ion-button
-          (click)="disconnectFromBluetoothDevice(scanResult)"
-          color="danger"
-          slot="end"
-        >
-          Disconnect
-        </ion-button>
-
-        <ion-button (click)="connectToBluetoothDevice(scanResult)" slot="end">
-          Connect
-        </ion-button> -->
-      </ion-item>
-    </ng-container>
 
 
   </form>
